@@ -15,7 +15,7 @@ public class PageWidget extends Widget implements WidgetHolder {
     private final Bounds bounds;
     private boolean isActive = false;
 
-    PageWidget(int x, int y, int width, int height){
+    public PageWidget(int x, int y, int width, int height){
         this.width = width;
         this.height = height;
         this.bounds = new Bounds(x, y, width, height);

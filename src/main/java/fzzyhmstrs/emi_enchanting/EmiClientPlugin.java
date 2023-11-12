@@ -17,8 +17,10 @@ import java.util.Collection;
 import java.util.Map;
 
 public class EmiClientPlugin implements EmiPlugin {
+
     private static final Identifier ENCHANTING_ID = new Identifier(EmiEnchanting.MOD_ID,"enchantments");
     public static final EmiRecipeCategory ENCHANTING_CATEGORY = new EmiRecipeCategory(ENCHANTING_ID, EmiStack.of(Items.ENCHANTED_BOOK));
+
 
     @Override
     public void register(EmiRegistry registry) {
@@ -41,7 +43,5 @@ public class EmiClientPlugin implements EmiPlugin {
         for (Map.Entry<Enchantment, Collection<ItemStack>> entry : enchantsMapAsMap.entrySet()){
             registry.addRecipe(new EnchantmentRecipe(entry.getValue(), entry.getKey(), enchantsMapAsMap));
         }
-
-
     }
 }

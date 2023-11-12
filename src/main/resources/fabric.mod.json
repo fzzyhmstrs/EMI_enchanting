@@ -9,12 +9,6 @@
     "fzzyhmstrs"
   ],
   "entrypoints": {
-    "main": [
-        "fzzyhmstrs.emi_enchanting.EmiEnchanting"
-    ],
-    "client": [
-      "fzzyhmstrs.emi_enchanting.EmiEnchantingClient"
-    ],
     "emi": [
       "fzzyhmstrs.emi_enchanting.EmiClientPlugin"
     ]
