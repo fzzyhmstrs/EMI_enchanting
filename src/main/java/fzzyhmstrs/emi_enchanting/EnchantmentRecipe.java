@@ -11,18 +11,24 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.EnchantmentTags;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class EnchantmentRecipe implements EmiRecipe {
 
-    public EnchantmentRecipe(Collection<ItemStack> books, Enchantment enchantment, Map<Enchantment, Collection<ItemStack>> enchantMap){
+    public EnchantmentRecipe(Collection<ItemStack> books, World world, RegistryEntry<Enchantment> enchantment, Map<RegistryEntry<Enchantment>, Collection<ItemStack>> enchantMap){
         this.enchantment = enchantment;
         List<EmiStack> bookStacks = books.stream().map(EmiStack::of).toList();
         EmiIngredient books1 = EmiIngredient.of(bookStacks);
@@ -39,19 +45,17 @@ public class EnchantmentRecipe implements EmiRecipe {
                 new ArrayList<>(),
                 new ArrayList<>());
         int counter = 0;
-        for (Item item : Registries.ITEM) {
-            if (enchantment.isAcceptableItem(new ItemStack(item))){
-                validItems.get(counter % 8).add(EmiStack.of(item));
-                counter++;
-            }
+        for (RegistryEntry<Item> item : enchantment.value().getApplicableItems()) {
+            validItems.get(counter % 8).add(EmiStack.of(item.value()));
+            counter++;
         }
         List<EmiIngredient> validItems1 = validItems.stream().map(EmiIngredient::of).toList();
 
-        Map<Enchantment,EmiIngredient> exclusions = new HashMap<>();
-        for (Map.Entry<Enchantment, Collection<ItemStack>> entry : enchantMap.entrySet()){
-            if (!entry.getKey().canCombine(enchantment) && entry.getKey() != enchantment){
+        Map<RegistryEntry<Enchantment>, EmiIngredient> exclusions = new HashMap<>();
+        for (Map.Entry<RegistryEntry<Enchantment>, Collection<ItemStack>> entry : enchantMap.entrySet()){
+            if (!Enchantment.canBeCombined(enchantment, entry.getKey())) {
                 List<EmiStack> stacks = entry.getValue().stream().map(EmiStack::of).toList();
-                exclusions.put(entry.getKey(),EmiIngredient.of(stacks));
+                exclusions.put(entry.getKey(), EmiIngredient.of(stacks));
             }
         }
 
@@ -61,20 +65,40 @@ public class EnchantmentRecipe implements EmiRecipe {
         inputs.addAll(exclusions.values());
         this.inputs = inputs;
 
-        Text curse = Text.translatable("emi_enchanting.curse", enchantment.isCursed() ? Text.translatable("emi_enchanting.yes_bad") : Text.translatable("emi_enchanting.no_bad"));
-        Text treasure = Text.translatable("emi_enchanting.treasure", enchantment.isTreasure() ? Text.translatable("emi_enchanting.yes_bad") : Text.translatable("emi_enchanting.no_bad"));
-        Text tradeable = Text.translatable("emi_enchanting.tradeable", enchantment.isAvailableForEnchantedBookOffer() ? Text.translatable("emi_enchanting.yes_good") : Text.translatable("emi_enchanting.no_good"));
-        Text random = Text.translatable("emi_enchanting.random", enchantment.isAvailableForRandomSelection() ? Text.translatable("emi_enchanting.yes_good") : Text.translatable("emi_enchanting.no_good"));
-        Text maxLvl = Text.translatable("emi_enchanting.maxLvl", Text.literal(String.valueOf(enchantment.getMaxLevel())).formatted(Formatting.BLACK));
+        Text curse = Text.translatable("emi_enchanting.curse", enchantment.isIn(EnchantmentTags.CURSE) ? Text.translatable("emi_enchanting.yes_bad") : Text.translatable("emi_enchanting.no_bad"));
+        Text treasure = Text.translatable("emi_enchanting.treasure", enchantment.isIn(EnchantmentTags.TREASURE) && !enchantment.isIn(EnchantmentTags.NON_TREASURE) ? Text.translatable("emi_enchanting.yes_bad") : Text.translatable("emi_enchanting.no_bad"));
 
-        String descLangKey = enchantment.getTranslationKey() + ".desc";
+        boolean trades = !(world.getEnabledFeatures().contains(FeatureFlags.TRADE_REBALANCE))
+                ?
+            enchantment.isIn(EnchantmentTags.TRADEABLE) || enchantment.isIn(EnchantmentTags.ON_TRADED_EQUIPMENT)
+                :
+            enchantment.isIn(EnchantmentTags.TAIGA_SPECIAL_TRADE) ||
+            enchantment.isIn(EnchantmentTags.SWAMP_SPECIAL_TRADE) ||
+            enchantment.isIn(EnchantmentTags.SNOW_SPECIAL_TRADE) ||
+            enchantment.isIn(EnchantmentTags.SAVANNA_SPECIAL_TRADE) ||
+            enchantment.isIn(EnchantmentTags.PLAINS_SPECIAL_TRADE) ||
+            enchantment.isIn(EnchantmentTags.JUNGLE_SPECIAL_TRADE) ||
+            enchantment.isIn(EnchantmentTags.DESERT_SPECIAL_TRADE) ||
+            enchantment.isIn(EnchantmentTags.TAIGA_COMMON_TRADE) ||
+            enchantment.isIn(EnchantmentTags.SWAMP_COMMON_TRADE) ||
+            enchantment.isIn(EnchantmentTags.SNOW_COMMON_TRADE) ||
+            enchantment.isIn(EnchantmentTags.SAVANNA_COMMON_TRADE) ||
+            enchantment.isIn(EnchantmentTags.PLAINS_COMMON_TRADE) ||
+            enchantment.isIn(EnchantmentTags.JUNGLE_COMMON_TRADE) ||
+            enchantment.isIn(EnchantmentTags.DESERT_COMMON_TRADE);
+
+        Text tradeable = Text.translatable("emi_enchanting.tradeable", trades ? Text.translatable("emi_enchanting.yes_good") : Text.translatable("emi_enchanting.no_good"));
+        Text random = Text.translatable("emi_enchanting.random", (enchantment.isIn(EnchantmentTags.IN_ENCHANTING_TABLE) || enchantment.isIn(EnchantmentTags.ON_RANDOM_LOOT)) ? Text.translatable("emi_enchanting.yes_good") : Text.translatable("emi_enchanting.no_good"));
+        Text maxLvl = Text.translatable("emi_enchanting.maxLvl", Text.literal(String.valueOf(enchantment.value().getMaxLevel())).formatted(Formatting.BLACK));
+
+        String descLangKey = Util.createTranslationKey("enchantment", enchantment.getKey().map(RegistryKey::getValue).orElse(Identifier.of(EmiEnchanting.MOD_ID, "unknown"))) + ".desc";
         MutableText descText = Text.translatable(descLangKey);
 
         List<PageWidget> widgets = new ArrayList<>();
 
         PageWidget firstPage = new PageWidget(0,0,144,124);
         firstPage.addSlot(books1,0,0);
-        firstPage.addText(enchantment.getName(1).copyContentOnly().formatted(Formatting.BLACK),22,2,0x000000,false);
+        firstPage.addText(Enchantment.getName(enchantment, 1).copyContentOnly().formatted(Formatting.BLACK),22,2,0x000000,false);
         firstPage.addText(curse,0,20,0x000000,false);
         firstPage.addText(treasure,0,31,0x000000,false);
         firstPage.addText(tradeable,0,42,0x000000,false);
@@ -108,14 +132,14 @@ public class EnchantmentRecipe implements EmiRecipe {
         }
 
         int exclusionsIndex = 0;
-        List<Map.Entry<Enchantment,EmiIngredient>> exclusionsList = exclusions.entrySet().stream().toList();
+        List<Map.Entry<RegistryEntry<Enchantment>, EmiIngredient>> exclusionsList = exclusions.entrySet().stream().toList();
         while (exclusionsIndex < exclusions.size()){
             PageWidget exclusionPage = new PageWidget(0,0,144,124);
             exclusionPage.addText(Text.translatable("emi_enchanting.exclusions"),0,0,0x000000,false);
             for (int i = 0; i < 5; i++){
                 int y = 14 + (20 * i);
                 exclusionPage.addSlot(exclusionsList.get(exclusionsIndex).getValue(), 0, y);
-                exclusionPage.addText(exclusionsList.get(exclusionsIndex).getKey().getName(1).copyContentOnly().formatted(Formatting.BLACK),20,y,0x000000,false);
+                exclusionPage.addText(Enchantment.getName(exclusionsList.get(exclusionsIndex).getKey(),1).copyContentOnly().formatted(Formatting.BLACK),20,y,0x000000,false);
                 exclusionsIndex++;
                 if (exclusionsIndex >= exclusionsList.size()) break;
             }
@@ -127,7 +151,7 @@ public class EnchantmentRecipe implements EmiRecipe {
         this.maxPage = this.pageWidgets.size() - 1;
     }
 
-    private final Enchantment enchantment;
+    private final RegistryEntry<Enchantment> enchantment;
 
     private final List<EmiStack> bookStacks;
 
@@ -164,9 +188,9 @@ public class EnchantmentRecipe implements EmiRecipe {
 
     @Override
     public @Nullable Identifier getId() {
-        Identifier id = Registries.ENCHANTMENT.getId(enchantment);
+        Identifier id = enchantment.getKey().map(RegistryKey::getValue).orElse(Identifier.of(EmiEnchanting.MOD_ID, "unknown"));
         if (id == null) return null;
-        return new Identifier(EmiEnchanting.MOD_ID,"/" + id.toTranslationKey() + "/enchanting_info" );
+        return Identifier.of(EmiEnchanting.MOD_ID,"/" + id.toTranslationKey() + "/enchanting_info" );
     }
 
     @Override

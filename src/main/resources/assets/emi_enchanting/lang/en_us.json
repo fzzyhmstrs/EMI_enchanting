@@ -11,5 +11,6 @@
   "emi_enchanting.maxLvl": "Max Level: %s",
   "emi_enchanting.valid_items": "Valid Items",
   "emi_enchanting.description": "Enchantment Description",
-  "emi_enchanting.exclusions": "Exclusions"
+  "emi_enchanting.exclusions": "Exclusions",
+  "enchantment.emi_enchanting.unknown.desc": "Unknown Enchantment"
 }
