@@ -39,14 +39,14 @@ public class EnchantmentRecipe implements EmiRecipe {
                 new ArrayList<>(),
                 new ArrayList<>());
         int counter = 0;
-        for (Item item : Registries.ITEM){
+        for (Item item : Registries.ITEM) {
             if (enchantment.isAcceptableItem(new ItemStack(item))){
                 validItems.get(counter % 8).add(EmiStack.of(item));
                 counter++;
             }
         }
         List<EmiIngredient> validItems1 = validItems.stream().map(EmiIngredient::of).toList();
-        
+
         Map<Enchantment,EmiIngredient> exclusions = new HashMap<>();
         for (Map.Entry<Enchantment, Collection<ItemStack>> entry : enchantMap.entrySet()){
             if (!entry.getKey().canCombine(enchantment) && entry.getKey() != enchantment){
@@ -71,7 +71,7 @@ public class EnchantmentRecipe implements EmiRecipe {
         MutableText descText = Text.translatable(descLangKey);
 
         List<PageWidget> widgets = new ArrayList<>();
-        
+
         PageWidget firstPage = new PageWidget(0,0,144,124);
         firstPage.addSlot(books1,0,0);
         firstPage.addText(enchantment.getName(1).copyContentOnly().formatted(Formatting.BLACK),22,2,0x000000,false);
@@ -134,7 +134,7 @@ public class EnchantmentRecipe implements EmiRecipe {
     private final List<EmiIngredient> inputs;
 
     private final List<PageWidget> pageWidgets;
-    
+
     private int currentPage = 0;
     private final int maxPage;
 
@@ -156,7 +156,7 @@ public class EnchantmentRecipe implements EmiRecipe {
             currentPage = 0;
         pageWidgets.get(currentPage).setActive(true);
     }
-    
+
     @Override
     public EmiRecipeCategory getCategory() {
         return EmiClientPlugin.ENCHANTING_CATEGORY;
