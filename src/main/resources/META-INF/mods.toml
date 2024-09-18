@@ -1,0 +1,36 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+issueTrackerURL = "https://github.com/fzzyhmstrs/EMI_enchanting/issues"
+license = "MIT"
+
+[[mods]]
+modId = "emi_enchanting"
+version = "${version}"
+displayName = "EMI Enchanting"
+displayURL = "https://github.com/fzzyhmstrs/EMI_enchanting"
+authors = "fzzyhmstrs"
+description = '''
+Plugin for EMI that displays information about enchantments: how to find, what they can enchant, what enchants exclude them.
+'''
+logoFile = "assets/emi_enchanting/icon.png"
+
+[[dependencies.emi_enchanting]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.emi_enchanting]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1]"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.emi_loot]]
+modId="emi"
+mandatory=true
+versionRange="[1.0.0,)"
+ordering="AFTER"
+side="CLIENT"

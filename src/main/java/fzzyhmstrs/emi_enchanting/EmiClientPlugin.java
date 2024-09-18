@@ -2,6 +2,7 @@ package fzzyhmstrs.emi_enchanting;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
+import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -19,6 +20,7 @@ import net.minecraft.util.Identifier;
 import java.util.Collection;
 import java.util.Map;
 
+@EmiEntrypoint
 public class EmiClientPlugin implements EmiPlugin {
 
     private static final Identifier ENCHANTING_ID = new Identifier(EmiEnchanting.MOD_ID,"enchantments");

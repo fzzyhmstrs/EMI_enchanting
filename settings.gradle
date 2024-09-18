@@ -5,6 +5,16 @@ pluginManagement {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
+        maven {
+            url = "https://maven.architectury.dev/"
+        }
+        maven {
+            url = "https://files.minecraftforge.net/maven/"
+        }
+        mavenCentral()
         gradlePluginPortal()
+    }
+    plugins {
+        id("dev.architectury.loom").version(settings.loomVersion)
     }
 }

@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id "dev.architectury.loom" version "1.6-SNAPSHOT"
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -19,27 +19,26 @@ repositories {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/"
     }
+    maven {
+        url = "https://maven.neoforged.net/releases/"
+    }
 }
 
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    forge "net.minecraftforge:forge:${project.loader_version}"
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation"net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    modImplementation "dev.emi:emi-fabric:${project.emi_version}"
+    modImplementation "dev.emi:emi-forge:${project.emi_version}"
 
 }
 
 processResources {
     inputs.property "version", project.version
-    inputs.property "id", archivesBaseName
 
-    filesMatching("fabric.mod.json") {
-        expand ("id": archivesBaseName, "version": project.version)
+    filesMatching("META-INF/mods.toml") {
+        expand ("version": project.version)
     }
 }
 
@@ -49,8 +48,8 @@ tasks.withType(JavaCompile) {
 }
 
 jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
+    from("license.txt") {
+        rename { "${project.archives_base_name}_${it}"}
     }
 }
 
