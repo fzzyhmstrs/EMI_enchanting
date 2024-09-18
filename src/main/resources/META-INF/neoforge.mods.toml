@@ -8,7 +8,7 @@ modId = "emi_enchanting"
 version = "${version}"
 displayName = "EMI Enchanting"
 displayURL = "https://github.com/fzzyhmstrs/EMI_enchanting"
-authors = "fzzyhmstrs, lxly9 (art)"
+authors = "fzzyhmstrs"
 description = '''Plugin for EMI that displays information about enchantments: how to find, what they can enchant, what enchants exclude them.'''
 logoFile = "assets/emi_enchanting/icon.png"
 
@@ -17,18 +17,18 @@ modId = "neoforge"
 type = "REQUIRED"
 versionRange = "[21.0,)"
 ordering = "NONE"
-side = "BOTH"
+side = "CLIENT"
 
 [[dependencies.emi_enchanting]]
 modId = "minecraft"
 type = "REQUIRED"
 versionRange = "[1.21,1.22)"
 ordering = "NONE"
-side = "BOTH"
+side = "CLIENT"
 
 [[dependencies.emi_enchanting]]
 modId = "emi"
 type = "REQUIRED"
 versionRange = "[1.0.0,)"
 ordering = "AFTER"
-side = "BOTH"
+side = "CLIENT"
