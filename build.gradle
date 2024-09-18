@@ -1,9 +1,9 @@
 plugins {
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id "dev.architectury.loom" version "1.7-SNAPSHOT"
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version as Object
@@ -19,38 +19,40 @@ repositories {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/"
     }
+    maven {
+        url = "https://maven.neoforged.net/releases/"
+    }
 }
 
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    mappings( loom.layered {
+        mappings("net.fabricmc:yarn:${project.yarnMappings}:v2")
+        mappings("dev.architectury:yarn-mappings-patch-neoforge:${project.yarnMappingsPatchVersion}")
+    })
+    neoForge("net.neoforged:neoforge:${project.loaderVersion}")
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation"net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    modImplementation "dev.emi:emi-fabric:${project.emi_version}"
+    modImplementation "dev.emi:emi-neoforge:${project.emi_version}"
 
 }
 
 processResources {
     inputs.property "version", project.version
-    inputs.property "id", archivesBaseName
 
-    filesMatching("fabric.mod.json") {
-        expand ("id": archivesBaseName, "version": project.version)
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand ("version": project.version)
     }
 }
 
 tasks.withType(JavaCompile) {
     // Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-    options.release.set(17)
+    options.release.set(21)
 }
 
 jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
+    from("licence.txt") {
+        rename { "${project.archives_base_name}_${it}"}
     }
 }
 
