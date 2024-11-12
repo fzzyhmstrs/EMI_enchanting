@@ -11,5 +11,6 @@
   "emi_enchanting.maxLvl": "最大等级：%s",
   "emi_enchanting.valid_items": "有效物品",
   "emi_enchanting.description": "魔咒描述",
-  "emi_enchanting.exclusions": "不共存魔咒"
+  "emi_enchanting.exclusions": "不共存魔咒",
+  "enchantment.emi_enchanting.unknown.desc": "未知魔咒"
 }
