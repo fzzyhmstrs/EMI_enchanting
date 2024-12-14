@@ -1,5 +1,5 @@
 {
-  "emi.category.emi_enchanting.enchantments": "Информация о зачаровнии",
+  "emi.category.emi_enchanting.enchantments": "Информация о зачаровании",
   "emi_enchanting.yes_good": "§0Да",
   "emi_enchanting.no_good": "§4Нет",
   "emi_enchanting.yes_bad": "§4Да",
@@ -11,5 +11,6 @@
   "emi_enchanting.maxLvl": "Максимальный уровень: %s",
   "emi_enchanting.valid_items": "Допустимые предметы",
   "emi_enchanting.description": "Описание зачарования",
-  "emi_enchanting.exclusions": "Несовместимые"
+  "emi_enchanting.exclusions": "Несовместимые",
+  "enchantment.emi_enchanting.unknown.desc": "Неизвестное зачарование"
 }
