@@ -1,0 +1,15 @@
+{
+  "emi.category.emi_enchanting.enchantments": "Información de Encantamientos",
+  "emi_enchanting.yes_good": "§0Sí",
+  "emi_enchanting.no_good": "§4No",
+  "emi_enchanting.yes_bad": "§4Sí",
+  "emi_enchanting.no_bad": "§0No",
+  "emi_enchanting.treasure": "Tesoro: %s",
+  "emi_enchanting.curse": "Maldición: %s",
+  "emi_enchanting.tradeable": "Intercambiable con Aldeanos: %s",
+  "emi_enchanting.random": "Seleccionable Aleatoriamente: %s",
+  "emi_enchanting.maxLvl": "Nivel Máximo: %s",
+  "emi_enchanting.valid_items": "Objetos Válidos",
+  "emi_enchanting.description": "Descripción del Encantamiento",
+  "emi_enchanting.exclusions": "Exclusiones"
+}
